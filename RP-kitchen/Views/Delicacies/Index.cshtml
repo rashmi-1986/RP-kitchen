@@ -1,0 +1,33 @@
+﻿@model List<RP_kitchen.Models.Domain.Delicacy>
+
+@{
+}
+<h1>Delicacies</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Catagory</th>
+            <th>Name</th>
+            <th>Picture</th>
+            <th>Date</th>           
+            <th>Price</th>
+            <th> </th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var delicacy in Model)
+        {
+            <tr>
+                <td>@delicacy.Id</td>
+                <td>@delicacy.Catagory</td>
+                <td>@delicacy.Name</td>
+                <td>@delicacy.Picture</td>
+                <td>@delicacy.Date.ToString("dd-MM-yyyy")</td>               
+                <td>@delicacy.Price</td>
+                <td><a href="Delicacies/View/@delicacy.Id">View</a></td>
+            </tr>
+        }
+    </tbody>
+</table>

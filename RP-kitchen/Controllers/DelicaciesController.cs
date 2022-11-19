@@ -1,14 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using RP_kitchen.Data;
 using RP_kitchen.Models;
 using RP_kitchen.Models.Domain;
 
 namespace RP_kitchen.Controllers
 {
+    [Authorize]
     public class DelicaciesController : Controller
     {
         private readonly ApplicationDbContext applicationDbContext;
+        private string uniqueFileName;
 
         public DelicaciesController(ApplicationDbContext applicationDbContext)
         {
@@ -26,14 +30,19 @@ namespace RP_kitchen.Controllers
         [HttpGet]
         public IActionResult Add()
         {
+            //ViewBag.Catagory = GetCatagory();
             return View();
         }
+
+        
 
         [HttpPost]
         public async Task<IActionResult> Add(AddDelicacyViewModel addDelicacyRequest)
         {
             var delicacy = new Delicacy()
             {
+               
+           
                 Id = Guid.NewGuid(),
                 Catagory = addDelicacyRequest.Catagory,
                 Name = addDelicacyRequest.Name,
@@ -44,11 +53,24 @@ namespace RP_kitchen.Controllers
             await applicationDbContext.Delicacies.AddAsync(delicacy);
             await applicationDbContext.SaveChangesAsync();
             return RedirectToAction("Index");
+
+            if (delicacy.Picture != null) ;
+
+            {
+                string uploadsFolder = Path.Combine(ApplicationDbContext.applicationRootPath, "images");
+                uniqueFileName = Guid.NewGuid().ToString() + delicacy.Picture.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var filestream = new FileStream(filePath, FileMode.Create))
+                {
+                    delicacy.Picture.CopyTo(filestream);
+                }
+            }
+            return View(delicacy);
         }
 
             [HttpGet]
-
-            public async Task<IActionResult> View(Guid id)
+        
+        public async Task<IActionResult> View(Guid id)
             {
                 var delicacy = await applicationDbContext.Delicacies.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -70,8 +92,8 @@ namespace RP_kitchen.Controllers
             }
 
             [HttpPost]
-
-            public async Task<IActionResult> View(UpdateDelicacyViewModel model)
+        
+        public async Task<IActionResult> View(UpdateDelicacyViewModel model)
             {
                 var delicacy = await applicationDbContext.Delicacies.FindAsync(model.Id);
 
@@ -84,10 +106,9 @@ namespace RP_kitchen.Controllers
                     delicacy.Price = model.Price;
 
                     await applicationDbContext.SaveChangesAsync();
-
-                    
-
                 }
+
+            
 
                 return RedirectToAction("Index");
             }

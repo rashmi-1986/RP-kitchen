@@ -6,6 +6,8 @@ namespace RP_kitchen.Data
 {
     public class ApplicationDbContext : IdentityDbContext
     {
+        internal static string applicationRootPath;
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {

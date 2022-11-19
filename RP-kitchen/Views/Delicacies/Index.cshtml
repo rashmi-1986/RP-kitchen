@@ -2,8 +2,9 @@
 
 @{
 }
-<h1>Delicacies</h1>
-<table class="table">
+<h1>Delicacies Details</h1>
+
+    <table class="table table-striped">
     <thead>
         <tr>
             <th>Id</th>
@@ -23,7 +24,8 @@
                 <td>@delicacy.Id</td>
                 <td>@delicacy.Catagory</td>
                 <td>@delicacy.Name</td>
-                <td>@delicacy.Picture</td>
+                <td><img src="~/Images/@delicacy.Picture" style="width:70px;height:70px"/></td>
+                                   
                 <td>@delicacy.Date.ToString("dd-MM-yyyy")</td>               
                 <td>@delicacy.Price</td>
                 <td><a href="Delicacies/View/@delicacy.Id">View</a></td>

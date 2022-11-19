@@ -4,7 +4,7 @@
 
 <h1> Add Delicacy </h1>
 
-<form method="post" action="Add" class="mt-4">
+<form enctype="multipart/form-data" method="post" action="Add" class="mt-4">
     <div class="mb-3">       
             <label for="" class="form-label">Catagory</label>
             <input type="text" class="form-control" asp-for="Catagory">        
@@ -13,10 +13,26 @@
         <label for="" class="form-label">Name</label>
         <input type="text" class="form-control" asp-for="Name">
     </div>
+
+
+
+
     <div class="mb-3">
-        <label for="" class="form-label">Picture</label>
-        <input type="text" class="form-control" asp-for="Picture">
-    </div>
+        <label asp-for="Picture" class="control-label"></label>
+        <div class="custom-file">
+        <input asp-for="Picture" class="custom-file-input" id="IMPicture"
+        onchange="docuent.getElementById('PicturePrv').src = window.URL.addObjectURL(this.files[0])">
+        <label class="custom-file-lable" for="IMPicture">Choose file </lable>   </div>
+        <span asp-validation-for="Picture" class="text-danger"></span>
+        <img id="PicturePrv" src="" alt="Logo Image"
+         width="150" height="150" style="border:1px; margin-top:20px; margin-left:120px;"/>   
+     </div>
+    
+    
+    
+    
+      
+    
     <div class="mb-3">
         <label for="" class="form-label">Date</label>
         <input type="date" class="form-control" asp-for="Date">
@@ -29,4 +45,21 @@
 
 
     <button type="submit" class="btn btn-primary">Add</button>
+    <button type="submit" class="btn btn-danger" asp-action="Delete" asp-controller="Delicacies">Delete</button>
 </form>
+
+
+@section Scripts
+{
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+<script type="text/javascript">
+    $(".custom-file-input").on("change", function (){
+        var fileName = $(this).val().split("\\").pop();
+        $(this).siblings(".custom-file-lable").addClass("selected").html(fileName);
+
+    });
+    
+
+</script>
+}
+   

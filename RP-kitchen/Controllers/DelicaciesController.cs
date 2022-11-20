@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using RP_kitchen.Data;
 using RP_kitchen.Models;
 using RP_kitchen.Models.Domain;
+using System.Drawing.Text;
 
 namespace RP_kitchen.Controllers
 {
@@ -30,7 +32,7 @@ namespace RP_kitchen.Controllers
         [HttpGet]
         public IActionResult Add()
         {
-            //ViewBag.Catagory = GetCatagory();
+            
             return View();
         }
 
@@ -68,28 +70,32 @@ namespace RP_kitchen.Controllers
             return View(delicacy);
         }
 
-            [HttpGet]
-        
+        [HttpGet]
+
         public async Task<IActionResult> View(Guid id)
+        {
+            var delicacy = await applicationDbContext.Delicacies.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (delicacy != null)
             {
-                var delicacy = await applicationDbContext.Delicacies.FirstOrDefaultAsync(x => x.Id == id);
-
-                if (delicacy != null)
+                var viewModel = new UpdateDelicacyViewModel()
                 {
-                    var viewModel = new UpdateDelicacyViewModel()
-                    {
-                        Id = delicacy.Id,
-                        Catagory = delicacy.Catagory,
-                        Name = delicacy.Name,
-                        Date = delicacy.Date,
-                        Picture = delicacy.Picture,
-                        Price = delicacy.Price
+                    Id = delicacy.Id,
+                    Catagory = delicacy.Catagory,
+                    Name = delicacy.Name,
+                    Date = delicacy.Date,
+                    Picture = delicacy.Picture,
+                    Price = delicacy.Price
 
-                    };
-                    return await Task.Run(() => View("View", viewModel));
-                }
-                return RedirectToAction("Index");
+                };
+                return await Task.Run(() => View("View", viewModel));
             }
+            return RedirectToAction("Index");
+
+
+           
+
+        }
 
             [HttpPost]
         
@@ -108,10 +114,8 @@ namespace RP_kitchen.Controllers
                     await applicationDbContext.SaveChangesAsync();
                 }
 
-            
-
-                return RedirectToAction("Index");
-            }
+                     return RedirectToAction("Index");
+             }
 
             [HttpPost]
             public async Task<IActionResult> Delete(UpdateDelicacyViewModel model)
